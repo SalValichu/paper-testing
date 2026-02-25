@@ -19,13 +19,12 @@ jobs:
         run: mkdir -p fabric-server
 
       - name: Download Fabric Installer
-        # Using the official Fabric Meta redirect (most reliable)
+        # This link always points to the latest stable universal JAR
         run: |
           curl -L -o fabric-installer.jar https://maven.fabricmc.net
-          ls -lh fabric-installer.jar
-
+          
       - name: Run Fabric Installer
-        # This uses the installer to fetch the specific 1.21.10 and 0.15.11 files
+        # -downloadMinecraft fetches the required base jar automatically
         run: |
           java -jar fabric-installer.jar server \
           -dir fabric-server \
