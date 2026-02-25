@@ -1,0 +1,51 @@
+name: Build MC Serv files
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Up Java 21
+        uses: actions/setup-java@v4 
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Download Paper 1.21.10
+        run: wget -O paper.jar https://api.papermc.io/v2/projects/versions/1.21.10/builds/130/downloads/paper-1.21.10-130.jar
+        
+      - name: Download Fabric Installer
+        run: wget -O fabric-installer.jar https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric/fabric-installer-1.0.1.jar
+        
+      - name: Run Fabric Installer
+        run: java -jar fabric-installer.jar server -mcversion 1.21.10 -loader 0.15.11 -downloadMinecraft
+        
+      - name: Accept Eula
+        run: echo "eula=true" > eula.txt
+        
+      - name: Create Server Directory
+        run: |
+          mkdir -p minecraft-server
+          mv fabric-server-launch.jar minecraft-server/
+          mv paper.jar minecraft-server/
+          mv eula.txt minecraft-server/
+          # The following moves depend on the fabric installer's output structure, adjust as needed
+          mv mods minecraft-server/ 2>/dev/null || true
+          mv libraries minecraft-server/libraries/ 2>/dev/null || true # Adjust path as needed
+          mv versions minecraft-server/versions/ 2>/dev/null || true # Adjust path as needed
+          
+      - name: Package Everything
+        run: |
+          cd minecraft-server
+          tar -czf ../minecraft-server-complete.tar.gz *
+          cd ..
+          
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: minecraft-server-files
+          path: minecraft-server-complete.tar.gz
+          retention-days: 7 
