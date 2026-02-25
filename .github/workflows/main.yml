@@ -37,7 +37,7 @@ jobs:
       - name: Package Everything
         run: |
           cd fabric-server
-          zip -r ../minecraft-server-complete.zp
+          zip -r ../minecraft-server-complete.zip
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
