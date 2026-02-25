@@ -37,7 +37,7 @@ jobs:
       - name: Package Everything
         run: |
           cd fabric-server
-          tar -czf ../fabric-server-1.21.10.tar.gz .
+          zip -r ../minecraft-server-complete.zp
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
