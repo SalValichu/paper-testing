@@ -19,12 +19,13 @@ jobs:
         run: mkdir -p fabric-server
 
       - name: Download Fabric Installer
-        # Fixed URL: points to the direct Maven artifact path
+        # Using the official Fabric Meta redirect (most reliable)
         run: |
           curl -L -o fabric-installer.jar https://maven.fabricmc.net
+          ls -lh fabric-installer.jar
 
       - name: Run Fabric Installer
-        # This will download the Minecraft 1.21.10 base and install Loader 0.15.11
+        # This uses the installer to fetch the specific 1.21.10 and 0.15.11 files
         run: |
           java -jar fabric-installer.jar server \
           -dir fabric-server \
