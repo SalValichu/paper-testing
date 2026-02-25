@@ -19,11 +19,18 @@ jobs:
         run: mkdir -p fabric-server
 
       - name: Download Fabric Installer
-        run: wget -O fabric-installer.jar https://maven.fabricmc.net
-        
+        # Using curl with -L to follow redirects and -o for the output name
+        run: |
+          curl -L -o fabric-installer.jar https://maven.fabricmc.net
+          
+      - name: Verify Installer Integrity
+        run: |
+          if ! jar tf fabric-installer.jar > /dev/null; then
+            echo "Error: fabric-installer.jar is corrupt or empty"
+            exit 1
+          fi
+
       - name: Run Fabric Installer
-        # -dir specifies the output folder
-        # -downloadMinecraft pulls the official base jar required for Fabric to run
         run: |
           java -jar fabric-installer.jar server \
           -dir fabric-server \
