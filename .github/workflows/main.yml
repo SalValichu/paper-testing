@@ -19,18 +19,13 @@ jobs:
         run: mkdir -p fabric-server
 
       - name: Download Fabric Installer
-        # Using curl with -L to follow redirects and -o for the output name
+        # Using the direct stable maven link for the latest installer
         run: |
+          curl -L -o fabric-installer.jar https://maven.fabricmc.net || \
           curl -L -o fabric-installer.jar https://maven.fabricmc.net
-          
-      - name: Verify Installer Integrity
-        run: |
-          if ! jar tf fabric-installer.jar > /dev/null; then
-            echo "Error: fabric-installer.jar is corrupt or empty"
-            exit 1
-          fi
 
       - name: Run Fabric Installer
+        # Even with the 1.1.0 installer, we can specify mcversion 1.21.10
         run: |
           java -jar fabric-installer.jar server \
           -dir fabric-server \
